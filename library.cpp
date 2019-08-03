@@ -65,7 +65,7 @@ char *rmlead(char *str) {
 */
 
 char *rmtrail(char *str) {
-	int i;
+	size_t i;
 	if (str && 0 != (i = strlen(str))) {
 		while (--i >= 0) {
 			if (!isspace(str[i]))

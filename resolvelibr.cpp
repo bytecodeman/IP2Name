@@ -58,7 +58,7 @@ int querydns(const char *dnsserver, const char *szQuery, char *host, WORD hostle
 
 int DNS_Query(const char *pszQuery, const char *pszServer, char *achBufIn) {
 	HEADER *pDNShdr;
-	unsigned s = NULL;
+	SOCKET s = NULL;
 	struct sockaddr_in stSockAddr;
 	struct sockaddr_in recSockAddr;
 	int recSockAddrLen = sizeof(recSockAddr);
@@ -253,10 +253,9 @@ int PutQName(const char *pszHostName, char *pQName) {
 */
 int isdotip(const char *p)
 {
-	int i=0,k,ret=1;
-
-	k = strlen(p);
-	for (i=0;i<k;i++) {
+	int i=0, ret=1;
+	size_t k = strlen(p);
+	for (i=0; i<k; i++) {
 		if ( (p[i]!='.') && (isalpha(p[i])) ) {
 			ret=0;
 			break;

@@ -24,7 +24,7 @@
 #include <windows.h>
 
 //#define MUTEX
-#define CRITSEC
+//#define CRITSEC
 
 #if !defined(MUTEX) && !defined(CRITSEC)
 #error Must Define Synchronization Method (MUTEX or CRITSEC)
@@ -43,7 +43,7 @@
 extern HANDLE hEvent;
 
 #ifdef MUTEX
-  extern HANDLE hsync;hEvent
+  extern HANDLE hsync;
   extern HANDLE hmapsync;
   extern HANDLE hmutex;
 #endif

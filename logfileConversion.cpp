@@ -52,10 +52,9 @@ static mystring templine;
 static void ConvertIPs(TranslationHostMap &hosts, char *line) {
 	int start = 0;
 	templine.clear();
-	while (pcre_exec(re_trans, pe_trans, line + start, strlen(line + start), 0, 0, ovector_trans, oveccount_trans) >= 0) {
+	while (pcre_exec(re_trans, pe_trans, line + start, (int)strlen(line + start), 0, 0, ovector_trans, oveccount_trans) >= 0) {
 	    char IPAddress[16] = {0};
-		strncpy(IPAddress, line + start + ovector_trans[2*2], ovector_trans[2*2 + 1] - ovector_trans[2*2]);
-		
+		strncpy(IPAddress, line + start + ovector_trans[2*2], ovector_trans[2*2 + 1] - ovector_trans[2*2]);	
 		templine.append(line + start + ovector_trans[2*1], ovector_trans[2*1+1] - ovector_trans[2*1]);
 		if (hosts.find(IPAddress) == hosts.end()) {
 			templine.append("[");
@@ -181,6 +180,8 @@ static bool isCompressedFile(const char *logfname) {
 static int ProcessLogFile(const char *logfname, int &count) { 
 	bool error = false;
 	bool isCompressed = isCompressedFile(logfname);
+
+
 	gzFile gzin = NULL;
 	gzFile gzout = NULL;
 
@@ -220,7 +221,7 @@ static int ProcessLogFile(const char *logfname, int &count) {
 
 static void processFiles(const stringBag &files) {
 	cout << "Starting Log File Translation Process" << endl;
-	int filecount = files.size();
+	size_t filecount = files.size();
 	for (int i = 0; i < filecount; i++) {
 		cout << "Translating File " << (i + 1) << " of " << filecount << ": " << files[i] << "; Lines: ";
 		int lines;
@@ -232,7 +233,7 @@ static void processFiles(const stringBag &files) {
 //********************************************************************
 
 static bool initpcre() {
-	const char *pattern = "^(.*?\\s+)(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\s+";
+	const char *pattern = "^(.*?\\s*)(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\s+";
 	const char *pattern_dns =  "^\\d+\\s+(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\s+(.*)$";
 	
 	const char *error;
@@ -282,40 +283,6 @@ static bool initpcre() {
 	}
 }
 
-//********************************************************************
-
-//static bool initpcre() {
-//	const char *pattern = "^(.*?\\s+)((\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])\\."
-//		"(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5]))(\\s+.*)";
-////	const char *pattern = "^(.*\\s+)((\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3}))(\\s+.*)";
-//
-//	const char *error;
-//	int erroffset, errorcode, count;
-//	try {
-//		if ((re_trans = pcre_compile(pattern, 0, &error, &erroffset, NULL)) == NULL) {
-//			cerr << "PCRE compilation 3 failed at offset " << erroffset << ": " << error << endl;
-//			throw false;
-//		}
-//		pe_trans = pcre_study(re_trans, 0, &error);
-//		if (error != NULL) {
-//			cerr << "PCRE Study 3 Error: " << error << endl;
-//			throw false;
-//		}
-//		if ((errorcode = pcre_fullinfo(re_trans, pe_trans, PCRE_INFO_CAPTURECOUNT, &count)) != 0) {
-//			cerr << "PCRE Info 3 Error Code = " << errorcode << endl;
-//			throw false;
-//		}
-//		oveccount_trans = 3 * (count + 1);
-//		if ((ovector_trans = (int *)pcre_malloc(oveccount_trans * sizeof(int))) == NULL) {
-//			cerr << "PCRE Malloc 3 Error" << endl;
-//			throw false;
-//		}
-//		return true;
-//	}
-//	catch (bool) {
-//		return false;
-//	}
-//}
 
 //********************************************************************
 
@@ -336,7 +303,7 @@ static void visitSpecs(const stringBag &logdir) {
 		_splitpath(logdir[indx].c_str(), drive, dir, NULL, NULL );
 
 		_finddata_t c_file;
-		long hFile; 
+		intptr_t hFile; 
 		if( (hFile = _findfirst(logdir[indx].c_str(), &c_file )) == -1L ) {
 			cout << "No files found using spec: " << logdir[indx].c_str() << endl;
 		}
@@ -357,13 +324,9 @@ static void visitSpecs(const stringBag &logdir) {
 }
 
 //********************************************************************
-// Read line from dns.txt.
-//
-// s --- The line from dns.txt.
-
 
 static void ReadIP(TranslationHostMap &hosts, char *s) {
-	if (pcre_exec(re_dns, pe_dns, s, strlen(s), 0, 0, ovector_dns, oveccount_dns) < 0)
+	if (pcre_exec(re_dns, pe_dns, s, (int)strlen(s), 0, 0, ovector_dns, oveccount_dns) < 0)
 		return;
 
 	char IPAddress[16] = {0};
@@ -379,7 +342,6 @@ static void ReadIP(TranslationHostMap &hosts, char *s) {
 //********************************************************************
 
 static void ReadDNSFile(TranslationHostMap &hosts, const string &dnsFile) {
-	// Read known host names from dnsFile
 	FILE *in = fopen(dnsFile.c_str(), "r");
 	if (!in) {
 		cout << "Cannot Open DNS File for Translation Phase" << dnsFile << endl;
@@ -399,14 +361,31 @@ static void ReadDNSFile(TranslationHostMap &hosts, const string &dnsFile) {
 
 void PerformLogfileConversion(stringBag &logdir) {
 	cout << "Starting Translation Phase on Files ..." << endl;
+
+#ifdef MUTEX
+	hsync = CreateMutex(NULL, false, NULL);
+#endif
+#ifdef CRITSEC
+	InitializeCriticalSection(&sync);
+#endif
+
 	if (!initpcre())
 		endItAll("Error: Could not initialize of PCRE in Translation Stage");
 	// Read the DNS File and load the hosts map with that data
 	ReadDNSFile(hosts, dnsfilespec);
+
 	// Now Visit All Log File Specs
 	visitSpecs(logdir);
 	// Close up PCRE
 	termpcre();
+
+#ifdef MUTEX
+	CloseHandle(hsync);
+#endif
+#ifdef CRITSEC
+	DeleteCriticalSection(&sync);
+#endif
+
 	cout << endl;
 }
 

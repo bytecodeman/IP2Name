@@ -66,8 +66,8 @@ extern UnCompressMap uncompressmap;
 
 static void ExtractIPs(HostMap &hosts, const char *s) {
 	int start_offset = 0;
-	int slen = strlen(s);
-	while (pcre_exec(re, pe, s, slen, start_offset, 0, ovector, oveccount) >= 0) {
+	size_t slen = strlen(s);
+	while (pcre_exec(re, pe, s, (int)slen, start_offset, 0, ovector, oveccount) >= 0) {
 		DWORD tip = 0;
 		int i;
 		for (i = 0; i < 4; i++) {
@@ -261,7 +261,7 @@ int ProcessLogFile(const char *logfname, int &addresses) {
 	syncVerboseMessages("Extracting IP addresses...\n");
 	if (loadTmpMap(logfname, tmp))
 		return 1;
-	addresses = tmp.size();
+	addresses = (int)tmp.size();
 
 	// Now, lookup unknown hosts.
 	HostMapIter pos;
@@ -309,7 +309,7 @@ static void ReadIP(HostMap &hosts, char *s) {
 		now /= 60;
 	}
 	s[strlen(s)-1] = '\0';
-	if (pcre_exec(re_dns, pe_dns, s, strlen(s), 0, 0, ovector_dns, oveccount_dns) < 0)
+	if (pcre_exec(re_dns, pe_dns, s, (int)strlen(s), 0, 0, ovector_dns, oveccount_dns) < 0)
 		return;
 
 	HostInfo info;
@@ -415,7 +415,7 @@ static void WriteDNSFile(const HostMap &hosts, const string &dnsFileSpec) {
 
 static void processFiles(const stringBag &files) {
 	cout << "Starting IP Address Reverse DNS Lookup Process" << endl;
-	int filecount = files.size();
+	size_t filecount = files.size();
 	for (int i = 0; i < filecount; i++) {
 		cout << "Reverse IP Address Processing File " << (i + 1) << " of " << filecount << ": " << files[i] << "; IPs: ";
 		int addresses;
@@ -427,6 +427,7 @@ static void processFiles(const stringBag &files) {
 //********************************************************************
 
 static void visitSpecs(const stringBag &logdir) {
+
 #ifdef MUTEX
 	hmapsync = CreateMutex(NULL, false, NULL);
 	hmutex = CreateMutex(NULL, false, NULL);
@@ -445,7 +446,7 @@ static void visitSpecs(const stringBag &logdir) {
 		_splitpath(logdir[indx].c_str(), drive, dir, NULL, NULL );
 
 		_finddata_t c_file;
-		long hFile; 
+		intptr_t hFile;
 		if( (hFile = _findfirst(logdir[indx].c_str(), &c_file )) == -1L ) {
 			cout << "No log files found using spec: " << logdir[indx].c_str() << endl;
 		}
