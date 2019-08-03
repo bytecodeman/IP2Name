@@ -64,7 +64,8 @@ static void ConvertIPs(TranslationHostMap &hosts, char *line) {
 		else {
 			templine.append(hosts[IPAddress]);
 		}
-		start += ovector_trans[2*0 + 1] - (ovector_trans[2*0+1] - ovector_trans[2*2+1]);
+		//start += ovector_trans[2*0 + 1] - (ovector_trans[2*0+1] - ovector_trans[2*2+1]);
+		start += ovector_trans[2 * 2 + 1];
 	}
 	templine.append(line + start);
 	if (templine.length() < MAXLINELEN)
@@ -73,81 +74,6 @@ static void ConvertIPs(TranslationHostMap &hosts, char *line) {
 		strncpy(line, templine.c_str(), MAXLINELEN - 1);
 }
 
-
-//******************************************************************
-//
-//static void ConvertIPs(HostMap hosts, char *line) {
-//	int start = 0;
-//	char templine[MAXLINELEN] = {0};
-//	while (pcre_exec(re_trans, pe_trans, line + start, strlen(line + start), 0, 0, ovector_trans, oveccount_trans) >= 0) {
-//	    DWORD tip = 0;
-//		int i;
-//		for (i = 3; i <= 6; i++) {
-//			int b = myatoi(line + start + ovector_trans[2*i]);
-//			if (b > 255)
-//				break;
-//			tip = (tip << 8) + b;
-//		}
-//		if (i <= 6) {
-//			continue;
-//		}
-//
-//		strncat(templine, line + start + ovector_trans[2*1], ovector_trans[2*1+1] - ovector_trans[2*1]);
-//		if (hosts.find(tip) == hosts.end() || strcmp(hosts[tip].name, UNKNOWNHOST) == 0) {
-//			strcat(templine, "[");
-//			strncat(templine, line + start + ovector_trans[2*2], ovector_trans[2*2 + 1] - ovector_trans[2*2]);
-//			strcat(templine, "]");
-//		}
-//        else {
-//			strcat(templine, hosts[tip].name);
-//		}
-//		start += ovector_trans[2*0 + 1] - (ovector_trans[2*0+1] - ovector_trans[2*2+1]);
-//	}
-//	strcat(templine, line + start);
-//	strncpy(line, templine, MAXLINELEN);
-//}
-
-//******************************************************************
-
-//static void ConvertIPs(HostMap hosts, char *line) {
-//	while (true) {
-//	    if (pcre_exec(re_trans, pe_trans, line, strlen(line), 0, 0, ovector_trans, oveccount_trans) < 0) {
-//		    break;
-//	    }	
-//	    DWORD tip = 0;
-//		int i;
-//		for (i = 3; i <= 6; i++) {
-//			int b = myatoi(line + ovector_trans[2*i]);
-//			tip = (tip << 8) + b;
-//		}
-//
-//		string *pre = new string(line + ovector_trans[2*1], ovector_trans[2*1+1] - ovector_trans[2*1]);
-//		string *domain;
-//		bool notfound;
-//		if (hosts.find(tip) == hosts.end() || strcmp(hosts[tip].name, UNKNOWNHOST) == 0) {
-//			domain = new string(line + ovector_trans[2*2], ovector_trans[2*2 + 1] - ovector_trans[2*2]);
-//			notfound = true;
-//		}
-//		else {
-//			domain = new string(hosts[tip].name);
-//			notfound = false;
-//		}
-//
-//		string *post = new string(line+ovector_trans[2*7], ovector_trans[2*7+1] - ovector_trans[2*7]);
-//
-//		string newstring;
-//		if (notfound) {
-//			newstring = *pre + "[" + *domain + "]" + *post;
-//		}
-//		else {
-//			newstring = *pre + *domain + *post;
-//		}
-//		strncpy(line, newstring.c_str(), MAXLINELEN);
-//		delete pre;
-//		delete domain;
-//		delete post;
-//	}
-//}
 
 //******************************************************************
 
@@ -233,9 +159,10 @@ static void processFiles(const stringBag &files) {
 //********************************************************************
 
 static bool initpcre() {
-	const char *pattern = "^(.*?\\s*)(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\s+";
+	//const char *pattern = "^(.*?\\s*)(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})";
+	const char* pattern = "(.*?)(?<!\\d)((25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]\\d|\\d)\\.(25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]\\d|\\d)\\.(25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]\\d|\\d)\\.(25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]\\d|\\d))(?!\\d)";
 	const char *pattern_dns =  "^\\d+\\s+(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\s+(.*)$";
-	
+
 	const char *error;
 	int erroffset, errorcode, count;
 	try {
