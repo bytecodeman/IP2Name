@@ -21,10 +21,10 @@ external forms of file compression.  As of V6.0, there is also an option
 to  translate the IP addresses in files to their associated domain
 names.
 
-(02/24/2016) IP2NAME V6.10 Includes both Win32 and x64 builds!  Built with [PCRE](http://www.pcre.org/) and [ZLIB](http://www.zlib.org/) Code.
+(08/03/2019) IP2NAME V7.0 x64 build  Built with [PCRE](http://www.pcre.org/) and [ZLIB](http://www.zlib.org/) Code.
 ----------------------------------------------------------------------------------------------------------------------------------------------
 
-**V6.10 now has an improved IP Address regular expression pattern that
+**V7.0 now has an improved IP Address regular expression pattern that
 will give better and faster IP address recognition results.**
 
 This build also has the option to translate the IP addresses in files to
@@ -225,14 +225,12 @@ be used as a sample configuration file:
 
     # UNCOMPRESS specifies the external program to call if you want to uncompress log files that are 
     # compressed using a format other than gzip.
-    # See http://www.analog.cx/docs/logfile.html#UNCOMPRESS for more info
 
     UNCOMPRESS *.zip ("winzip32 -e filename[.zip])
 
     # TO specifies the final timestamp that will be considered in a log file analysis. 
     # It is used when the percent specifiers are used in log file names. 
     # If no TO command line is found, RDNSLOGS assumes the current time when these programs are executed. 
-    # See http://www.analog.cx/docs/include.html#FROMTO for more info
 
     TO +00+00+00:0000
 

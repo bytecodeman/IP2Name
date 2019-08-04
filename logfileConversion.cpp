@@ -64,7 +64,6 @@ static void ConvertIPs(TranslationHostMap &hosts, char *line) {
 		else {
 			templine.append(hosts[IPAddress]);
 		}
-		//start += ovector_trans[2*0 + 1] - (ovector_trans[2*0+1] - ovector_trans[2*2+1]);
 		start += ovector_trans[2 * 2 + 1];
 	}
 	templine.append(line + start);
@@ -159,7 +158,6 @@ static void processFiles(const stringBag &files) {
 //********************************************************************
 
 static bool initpcre() {
-	//const char *pattern = "^(.*?\\s*)(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})";
 	const char* pattern = "(.*?)(?<!\\d)((25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]\\d|\\d)\\.(25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]\\d|\\d)\\.(25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]\\d|\\d)\\.(25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]\\d|\\d))(?!\\d)";
 	const char *pattern_dns =  "^\\d+\\s+(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\s+(.*)$";
 
