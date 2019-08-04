@@ -37,8 +37,8 @@ quick.  There two additional switches to enable this function:
     at your specified input files and create .trans files of the same
     name in the same directory. Original files are not modified.
 
-This build was made using the latest Visual Studio 2015 C++.  Please
-consider purchasing this version.  V6.10 is extremely stable and offers
+This build was made using the latest Visual Studio 2019 C++.  Please
+consider purchasing this version.  It is stable and offers
 many features and performance enhancements not found in the older
 versions.
 
