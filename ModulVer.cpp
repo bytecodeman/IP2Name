@@ -15,6 +15,7 @@
 ModuleVersion::ModuleVersion()
 {
 	m_pVersionInfo = NULL;				// raw version info data 
+	m_translation = { 0 };
 }
 
 //////////////////

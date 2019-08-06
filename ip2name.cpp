@@ -210,7 +210,9 @@ static void getVersionInfo() {
 	if (ver.GetFileVersionInfo(prgmname)) {
 		ProductName = ver.GetValue("ProductName");
 		int major, minor, x, y;
-		sscanf(ver.GetValue("ProductVersion").c_str(), "%d.%d.%d.%d", &major, &minor, &x, &y);
+		if (sscanf(ver.GetValue("ProductVersion").c_str(), "%d.%d.%d.%d", &major, &minor, &x, &y) < 4) {
+			major = minor = x = y = -1;
+		}
 		char buffer[25];
 		sprintf(buffer, "%d.%02d", major, minor);
 		ProductVersion = buffer;

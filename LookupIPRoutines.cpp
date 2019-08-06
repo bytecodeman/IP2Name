@@ -387,12 +387,13 @@ static void WriteDNSFile(const HostMap &hosts, const string &dnsFileSpec) {
 			count++;
 			char s[16];
 			IPToString(ip, s);
-			if (fprintf(out, "%lld %s %s\n", info.lastLookup, s, info.name) < 0) {
+			if (out == 0 || fprintf(out, "%lld %s %s\n", info.lastLookup, s, info.name) < 0) {
 				cerr << "Error while writing to " << tmpname << endl;
 			}
 		}
 	}
-	fclose(out);
+	if (out != 0)
+		fclose(out);
 	cout << "Writing: " << dnsFileSpec << " with " << count << " IP Addresses" << endl;
 
 	if (remove(bakname) == -1) 
@@ -454,7 +455,7 @@ static void visitSpecs(const stringBag &logdir) {
 				char fname[_MAX_FNAME];
 				char ext[_MAX_EXT];
 				_splitpath(c_file.name, NULL, NULL, fname, ext );
-				char tmpfile[_MAX_PATH];
+				char tmpfile[_MAX_PATH] = { 0 };
 				_makepath(tmpfile, drive, dir, fname, ext);
 				files.push_back(tmpfile);
 			} while( _findnext( hFile, &c_file ) == 0 );
@@ -468,7 +469,8 @@ static void visitSpecs(const stringBag &logdir) {
 	while (threadCount) 
 		Sleep(100);
 
-	CloseHandle(hEvent);
+	if (hEvent)
+		CloseHandle(hEvent);
 
 #ifdef MUTEX
 	CloseHandle(hmapsync);

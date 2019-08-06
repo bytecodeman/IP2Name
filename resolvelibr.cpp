@@ -205,7 +205,7 @@ void GetQName(char *pszHostName, const char *p, const char *pOrigBuf)
       *pszHostName++ ='.';
     }
 	// increment string pointer by j+1 characters
-    p+=j+1;
+    p += j + size_t(1);
   }
   *pszHostName=0;
 }

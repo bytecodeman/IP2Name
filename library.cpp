@@ -186,11 +186,12 @@ const char *stristr( const char *str, const char *substr) {
 	strcpy(tmpsubstr, substr);
 	_strlwr(tmpsubstr);
 	char *retval = strstr(tmpstr, tmpsubstr);
+	size_t offset = size_t(retval - tmpstr);
 	delete []tmpstr;
 	delete []tmpsubstr;
 	if (retval == NULL)
 		return NULL;
-	return str + (retval - tmpstr);
+	return str + offset;
 }
 
 //********************************************************************

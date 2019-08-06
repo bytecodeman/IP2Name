@@ -54,11 +54,11 @@ static void ConvertIPs(TranslationHostMap &hosts, char *line) {
 	templine.clear();
 	while (pcre_exec(re_trans, pe_trans, line + start, (int)strlen(line + start), 0, 0, ovector_trans, oveccount_trans) >= 0) {
 	    char IPAddress[16] = {0};
-		strncpy(IPAddress, line + start + ovector_trans[2*2], ovector_trans[2*2 + 1] - ovector_trans[2*2]);	
-		templine.append(line + start + ovector_trans[2*1], ovector_trans[2*1+1] - ovector_trans[2*1]);
+		strncpy(IPAddress, line + start + ovector_trans[2*2], ovector_trans[2*2 + 1] - size_t(ovector_trans[2*2]));	
+		templine.append(line + start + ovector_trans[2*1], ovector_trans[2*1+1] - size_t(ovector_trans[2*1]));
 		if (hosts.find(IPAddress) == hosts.end()) {
 			templine.append("[");
-			templine.append(line + start + ovector_trans[2*2], ovector_trans[2*2 + 1] - ovector_trans[2*2]);
+			templine.append(line + start + ovector_trans[2*2], ovector_trans[2*2 + 1] - size_t(ovector_trans[2*2]));
 			templine.append("]");
 		}
 		else {
@@ -96,7 +96,11 @@ static bool isCompressedFile(const char *logfname) {
 	catch (string &e) {
 		cerr << e << endl;
 	}
-	try { fclose(fin); } catch (...) {}
+	try { 
+		if (fin != 0) 
+			fclose(fin);
+	} 
+	catch (...) {}
 	return magicno[0] == 0x1f && magicno[1] == 0x8b;
 }
 
@@ -237,7 +241,7 @@ static void visitSpecs(const stringBag &logdir) {
 				char fname[_MAX_FNAME];
 				char ext[_MAX_EXT];
 				_splitpath(c_file.name, NULL, NULL, fname, ext );
-				char tmpfile[_MAX_PATH];
+				char tmpfile[_MAX_PATH] = { 0 };
 				_makepath(tmpfile, drive, dir, fname, ext);
 				files.push_back(tmpfile);
 			} while( _findnext( hFile, &c_file ) == 0 );
@@ -257,8 +261,8 @@ static void ReadIP(TranslationHostMap &hosts, char *s) {
 	char IPAddress[16] = {0};
 	char hostname[MAXNAMELEN] = {0};
 
-	strncpy(IPAddress, s + ovector_dns[1*2], ovector_dns[1*2 + 1] - ovector_dns[1*2]);
-	strncpy(hostname, s + ovector_dns[2*2],  ovector_dns[2*2 + 1] - ovector_dns[2*2]);
+	strncpy(IPAddress, s + ovector_dns[1*2], ovector_dns[1*2 + 1] - size_t(ovector_dns[1*2]));
+	strncpy(hostname, s + ovector_dns[2*2],  ovector_dns[2*2 + 1] - size_t(ovector_dns[2*2]));
 	if (strcmp(hostname, UNKNOWNHOST)) {
 		hosts[IPAddress] = hostname;
 	}
