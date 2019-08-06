@@ -52,7 +52,6 @@
     <ResourceCompile Include="ip2name.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ip2name.md" />
     <None Include="readme.md" />
   </ItemGroup>
   <ItemGroup>
@@ -181,7 +180,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>CRITSEC;NDEBUG;PCRE_STATIC;WIN32;_CONSOLE;WINDOWS_LEAN_AND_MEAN;STRICT;HAVE_CONFIG_H;_CRT_SECURE_NO_DEPRECATE;_WINSOCK_DEPRECATED_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CRITSEC;NDEBUG;PCRE_STATIC;WIN32;_CONSOLE;WINDOWS_LEAN_AND_MEAN;STRICT;HAVE_CONFIG_H;_CRT_SECURE_NO_DEPRECATE_XXX;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;_WINSOCK_DEPRECATED_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>

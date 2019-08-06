@@ -215,6 +215,7 @@ static int loadTmpMap(const char *logfname, HostMap &tmp) {
 			break;
 		}
 	}
+	char line[MAXLINELEN];
 	if (cmdstr != "") {
 		FILE *in;
 		char command[256];
@@ -225,7 +226,6 @@ static int loadTmpMap(const char *logfname, HostMap &tmp) {
 			cerr << "_popen error with command: " << command << endl;
 			return 1;
 		}
-		char line[MAXLINELEN];
 		while (fgets(line, MAXLINELEN, in)) 
 			ExtractIPs(tmp, line);
 		if (_pclose(in) == -1) {
@@ -234,7 +234,6 @@ static int loadTmpMap(const char *logfname, HostMap &tmp) {
 		}
 	}
 	else {
-		char line[MAXLINELEN];
 		gzFile gzin = gzopen(logfname, "rb");
 		if (!gzin) {
 			cerr << "Could not open file " << logfname << endl;
