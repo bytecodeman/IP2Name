@@ -17,7 +17,7 @@ minutes since the beginning of 1970, GMT (i.e., "Unix time" divided by
 format should be compatible with most log analyzers.
 
 IP2NAME has internal support for gzip compression and supports all other
-external forms of file compression.  As of V6.0, there is also an option
+external forms of file compression.  There is also an option
 to  translate the IP addresses in files to their associated domain
 names.
 
@@ -192,8 +192,7 @@ c:\\logs directory with IP addresses changed to domain names.
 
 All other lines in the configuration file are ignored.
 
-If you are not using analog as your log file analyzer, the following can
-be used as a sample configuration file:
+The following can be used as a sample configuration file:
 
     # Start of Sample Configuration File for RDNSLOGS
 
